@@ -1,0 +1,482 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;  /* Prevent horizontal scroll */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.container {
+    position: relative;
+    width: 100%;  /* Changed from 100vw to 100% */
+    height: 100vh;
+    overflow: hidden;  
+    background: #ffffff;
+}
+
+/* Animated Background Gradient */
+.animated-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.08;
+    transition: background 1.2s ease;
+    z-index: 0;
+}
+
+/* Floating Particles */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.6), transparent);
+    border-radius: 50%;
+    animation: float infinite ease-in-out;
+    opacity: 0;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+    25% {
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-100px) translateX(50px) scale(1.2);
+        opacity: 0.4;
+    }
+    75% {
+        opacity: 0.6;
+    }
+}
+
+.section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    z-index: 2;
+}
+
+/* Transition Overlay */
+.transition-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(59, 130, 246, 0.15) 50%, 
+        transparent 100%);
+    animation: sweepAcross 0.8s ease-out;
+    z-index: 10;
+    pointer-events: none;
+}
+
+@keyframes sweepAcross {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.slide-active {
+    transform: translate(0, 0);
+    z-index: 3;
+}
+
+.slide-in-right {
+    transform: translateX(100%);
+    z-index: 2;
+}
+
+.slide-in-left {
+    transform: translateX(-100%);
+    z-index: 2;
+}
+
+.slide-in-top {
+    transform: translateY(-100%);
+    z-index: 2;
+}
+
+.slide-in-bottom {
+    transform: translateY(100%);
+    z-index: 2;
+}
+
+.slide-out-left {
+    transform: translateX(-100%);
+    z-index: 1;
+}
+
+.slide-out-right {
+    transform: translateX(100%);
+    z-index: 1;
+}
+
+.slide-out-top {
+    transform: translateY(-100%);
+    z-index: 1;
+}
+
+.slide-out-bottom {
+    transform: translateY(100%);
+    z-index: 1;
+}
+
+.left-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 5%;  /* Reduced from 8% to prevent overflow */
+    animation: fadeInLeft 1s ease-out;
+    z-index: 4;
+}
+
+.right-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;  /* Reduced padding */
+    animation: fadeInRight 1s ease-out;
+    z-index: 4;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Animated Title Characters */
+.title {
+    font-size: 5rem;
+    font-weight: 300;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+.title-char {
+    display: inline-block;
+    animation: charBounce 0.6s ease-out both;
+}
+
+@keyframes charBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    60% {
+        transform: translateY(-5px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Shimmer Text Effect */
+.subtitle {
+    font-size: 1.5rem;
+    color: #3b82f6;
+    margin-bottom: 2rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.shimmer-text {
+    background: linear-gradient(90deg, 
+        #3b82f6 0%, 
+        #8b5cf6 25%, 
+        #ec4899 50%, 
+        #8b5cf6 75%, 
+        #3b82f6 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.description {
+    font-size: 1.1rem;
+    color: #64748b;
+    line-height: 1.8;
+    max-width: 500px;
+}
+
+/* Enhanced Shop Now Button */
+.shop-now-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+    padding: 12px 32px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #007bff;
+    background-color: transparent;
+    border: 2px solid #007bff;
+    border-radius: 50px;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.shop-now-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: #007bff;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+    z-index: -1;
+}
+
+.shop-now-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.shop-now-btn:hover {
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+}
+
+.btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-icon {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.shop-now-btn:hover .btn-icon {
+    transform: translateX(5px);
+}
+
+/* Perfume Image Enhancements */
+.perfume-image-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 600px;
+    cursor: pointer;
+    transition: transform 0.6s ease;
+}
+
+.perfume-image-container:hover {
+    transform: scale(1.05);
+}
+
+/* Pulsing Glow Behind Image */
+.perfume-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: pulse 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+.perfume-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;  /* Changed from cover to contain */
+    transition: all 0.6s ease;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.2));
+}
+
+.perfume-image-container:hover .perfume-image {
+    filter: drop-shadow(0 30px 60px rgba(59, 130, 246, 0.4));
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+}
+
+.nav-btn {
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #3b82f6;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.4s ease;
+    z-index: -1;
+}
+
+.nav-btn:hover:not(:disabled)::before {
+    transform: scale(1);
+}
+
+.nav-btn:hover:not(:disabled) {
+    color: white;
+    transform: scale(1.15);
+    border-color: #3b82f6;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .section {
+        flex-direction: column;
+    }
+
+    .left-content {
+        padding: 4rem 2rem 2rem 2rem;
+    }
+
+    .right-content {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 3rem;
+    }
+
+    .perfume-image-container {
+        max-width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .description {
+        font-size: 1rem;
+    }
+
+    .perfume-image-container {
+        max-width: 300px;
+        height: 350px;
+    }
+
+    .nav-buttons {
+        bottom: 2rem;
+    }
+
+    .nav-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .left-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .right-content {
+        padding: 1rem;
+    }
+}
