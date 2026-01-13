@@ -4,10 +4,16 @@ import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 
 
+
 const Home = lazy(() => import('./pages/Home/Home'));
 const Cart = lazy(() => import('./pages/Cart/Cart'));
+const Checkout = lazy(() => import('./pages/Checkout/Checkout'));
+const Payment = lazy(() => import('./pages/Payment/Payment'));
 const Details = lazy(() => import('./pages/Details/Details'));
 const Stock = lazy(() => import('./pages/Stock/Stock'));
+const Signup = lazy(() => import('./pages/Signup/Signup'));
+const Login = lazy(() => import('./pages/Login/Login'));
+const Admin = lazy(() => import('./pages/dashboard/admin/Admin'))
 
 function App() {
   return (
@@ -21,6 +27,11 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/stock" element={<Stock />} />
              <Route path="/products/:id" element={<Details />} />
+             <Route path="/signup" element={<Signup />} />
+             <Route path="/login" element={<Login />} />
+             <Route path="/Checkout" element={<Checkout />} />
+             <Route path="/Payment" element={<Payment />} />
+             <Route path="/dashboard/admin" element={<Admin />} />
           </Routes>
           <Footer/>
         </BrowserRouter>

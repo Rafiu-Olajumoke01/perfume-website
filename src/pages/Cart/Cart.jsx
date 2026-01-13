@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
   removeItemCart, 
   clearCart, 
-  checkoutCart,
   incrementQuantity,
   decrementQuantity
 } from './../../store/cart/cartSlice';
@@ -18,7 +17,6 @@ export default function Cart() {
   
   const cartItems = useSelector((state) => state.cart.cartItem);
   
-  // Debug: Let's see what's in the cart
   console.log("Cart Items from Redux:", cartItems);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -68,7 +66,7 @@ export default function Cart() {
                   </div>
 
                   <div className="item-price">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ₦{(item.price * item.quantity).toLocaleString()}
                   </div>
 
                   <button 
@@ -87,32 +85,29 @@ export default function Cart() {
               
               <div className="summary-row">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₦{subtotal.toLocaleString()}</span>
               </div>
               
               <div className="summary-row">
                 <span>Shipping</span>
-                <span>${shipping.toFixed(2)}</span>
+                <span>₦{shipping.toLocaleString()}</span>
               </div>
               
               <div className="summary-row">
                 <span>Tax</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>₦{tax.toFixed(2)}</span>
               </div>
               
               <div className="summary-divider"></div>
               
               <div className="summary-row summary-total">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>₦{total.toLocaleString()}</span>
               </div>
 
               <button 
                 className="checkout-btn" 
-                onClick={() => {
-                  dispatch(checkoutCart());
-                  navigate('/checkout');
-                }}
+                onClick={() => navigate('/checkout')}
               >
                 Proceed to Checkout
               </button>
