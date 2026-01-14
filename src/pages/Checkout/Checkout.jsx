@@ -70,8 +70,8 @@ const Checkout = () => {
 
       console.log("Sending order data:", orderData); // Debug log
 
-      // Send to backend
-      const response = await axios.post('http://127.0.0.1:8000/api/orders/create/', orderData);
+      // Send to backend - UPDATED TO RENDER URL
+      const response = await axios.post('https://perfume-backend-4.onrender.com/api/orders/create/', orderData);
 
       console.log("Order created:", response.data);
 
