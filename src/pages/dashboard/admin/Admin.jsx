@@ -30,7 +30,7 @@ const Dashboard = () => {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/products/");
+      const res = await axios.get("https://perfume-backend-4.onrender.com/api/products/");
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -40,7 +40,7 @@ const Dashboard = () => {
   // Fetch orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/orders/orders/");
+      const res = await axios.get("https://perfume-backend-4.onrender.com/api/orders/orders/");
       setOrders(res.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -72,14 +72,14 @@ const Dashboard = () => {
     try {
       if (editingProduct) {
         await axios.put(
-          `http://127.0.0.1:8000/api/products/${editingProduct.id}/`,
+          `https://perfume-backend-4.onrender.com/api/products/${editingProduct.id}/`,
           payload,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         showNotification("Product updated successfully!");
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/api/products/add/",
+          "https://perfume-backend-4.onrender.com/api/products/add/",
           payload,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -96,7 +96,7 @@ const Dashboard = () => {
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Delete this product?")) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/products/${id}/`);
+        await axios.delete(`https://perfume-backend-4.onrender.com/api/products/${id}/`);
         fetchProducts();
         showNotification("Product deleted");
       } catch (error) {
@@ -136,7 +136,7 @@ const Dashboard = () => {
   // Update order status
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/orders/update/${orderId}/`, {
+      await axios.put(`https://perfume-backend-4.onrender.com/api/orders/update/${orderId}/`, {
         status: newStatus,
       });
       fetchOrders();
@@ -152,7 +152,7 @@ const Dashboard = () => {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/orders/delete/${orderId}/`);
+      await axios.delete(`https://perfume-backend-4.onrender.com/api/orders/delete/${orderId}/`);
       fetchOrders();
       showNotification("Order deleted");
     } catch (error) {

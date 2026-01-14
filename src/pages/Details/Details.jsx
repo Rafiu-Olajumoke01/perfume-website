@@ -17,7 +17,7 @@ export default function Details() {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://127.0.0.1:8000/api/products/${id}/`);
+                const response = await axios.get(`https://perfume-backend-4.onrender.com/api/products/${id}/`);
                 setProduct(response.data);
                 setLoading(false);
             } catch (error) {
@@ -60,7 +60,7 @@ export default function Details() {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.image ? `http://127.0.0.1:8000${product.image}` : null,
+            image: product.image ? `https://perfume-backend-4.onrender.com${product.image}` : null,
             category: product.category,  
             quantity: quantity
         }));
@@ -84,7 +84,7 @@ export default function Details() {
                     <div className="details-image-section">
                         <div className="details-image">
                             <img 
-                                src={product.image ? `http://127.0.0.1:8000${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'} 
+                                src={product.image ? `https://perfume-backend-4.onrender.com${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'} 
                                 alt={product.name} 
                             />
                             {product.quantity < 20 && (

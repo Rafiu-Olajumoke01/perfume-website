@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api",
+    baseURL: "https://perfume-backend-4.onrender.com/api",  // ← CHANGED THIS LINE
     headers: {
         "Content-Type": "application/json",
     },

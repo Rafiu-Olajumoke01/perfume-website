@@ -12,7 +12,7 @@ export default function HomePage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://127.0.0.1:8000/api/products/');
+        const response = await axios.get('https://perfume-backend-4.onrender.com/api/products/');
         // Only get first 6 products for homepage
         setProducts(response.data.slice(0, 6));
         setLoading(false);
@@ -64,7 +64,7 @@ export default function HomePage() {
                 {/* Image Container */}
                 <div className="product-image-container">
                   <img
-                    src={product.image ? `http://127.0.0.1:8000${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
+                    src={product.image ? `https://perfume-backend-4.onrender.com${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
                     alt={product.name}
                     className="product-image"
                   />

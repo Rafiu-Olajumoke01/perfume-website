@@ -1,219 +1,318 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import hmcImageOne from './../assets/hmc_collections1-removebg-preview.png'
-import hmcImageTwo from './../assets/hmc_collections2-removebg-preview.png'
+import React from 'react';
+import { Link } from 'react-router-dom';
 import './banner.css'
+
 export default function Banner() {
-    const [activeSection, setActiveSection] = useState(0);
-    const [isAnimating, setIsAnimating] = useState(false);
-    const [particles, setParticles] = useState([]);
-
-    const sections = [
-        {
-            title: "Azure Mist",                
-            subtitle: "Oceanic Elegance",       
-            description: "Discover our exclusive collection of premium fragrances, crafted with the finest ingredients from around the world.",
-            imageUrl: hmcImageOne,
-            direction: "right",
-            bgGradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-        },
-        {
-            title: "Mystique Noir",
-            subtitle: "Dark Elegance",
-            description: "A captivating blend of oud and amber, creating an aura of mystery and sophistication.",
-            imageUrl: hmcImageTwo,
-            direction: "bottom",
-            bgGradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
-        },
-        {
-            title: "Rose Éternelle",
-            subtitle: "Timeless Romance",
-            description: "Delicate rose petals dancing with vanilla, evoking memories of eternal love.",
-            imageUrl: "https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=800&q=80",
-            direction: "left",
-            bgGradient: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)"
-        },
-        {
-            title: "Citrus Aurora",
-            subtitle: "Fresh Awakening",
-            description: "Bright bergamot and neroli capture the essence of a new dawn, invigorating and pure.",
-            imageUrl: "https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=800&q=80",
-            direction: "top",
-            bgGradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"
-        }
-    ];
-
-    // Generate floating particles
-    useEffect(() => {
-        const newParticles = Array.from({ length: 20 }, (_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            size: Math.random() * 4 + 2,
-            duration: Math.random() * 10 + 15,
-            delay: Math.random() * 5
-        }));
-        setParticles(newParticles);
-    }, []);
-
-    // Wrap handlers in useCallback to prevent unnecessary recreations
-    const handleNext = useCallback(() => {
-        setIsAnimating(prev => {
-            if (!prev) {
-                setActiveSection(current => (current + 1) % sections.length);
-                setTimeout(() => setIsAnimating(false), 800);
-                return true;
-            }
-            return prev;
-        });
-    }, [sections.length]);
-
-    const handlePrev = useCallback(() => {
-        setActiveSection(current => {
-            if (current > 0) {
-                setIsAnimating(true);
-                setTimeout(() => setIsAnimating(false), 800);
-                return current - 1;
-            }
-            return current;
-        });
-    }, []);
-
-    // Auto-slide every 5 seconds
-    useEffect(() => {
-        const autoSlide = setInterval(() => {
-            handleNext();
-        }, 5000);
-
-        return () => clearInterval(autoSlide);
-    }, [handleNext]);
-
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') handleNext();
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') handlePrev();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleNext, handlePrev]);
-
-    const getSlideClass = (index) => {
-        const direction = sections[index].direction;
-        if (index === activeSection) return 'slide-active';
-        if (index < activeSection) {
-            return direction === 'right' ? 'slide-out-left' :
-                direction === 'left' ? 'slide-out-right' :
-                    direction === 'bottom' ? 'slide-out-top' : 'slide-out-bottom';
-        }
-        return direction === 'right' ? 'slide-in-right' :
-            direction === 'left' ? 'slide-in-left' :
-                direction === 'bottom' ? 'slide-in-bottom' : 'slide-in-top';
-    };
-
     return (
-        <div className="container">
-            {/* Animated Background Gradient */}
-            <div 
-                className="animated-bg" 
-                style={{ background: sections[activeSection].bgGradient }}
-            />
-
-            {/* Floating Particles */}
-            <div className="particles-container">
-                {particles.map(particle => (
-                    <div
-                        key={particle.id}
-                        className="particle"
-                        style={{
-                            left: `${particle.x}%`,
-                            top: `${particle.y}%`,
-                            width: `${particle.size}px`,
-                            height: `${particle.size}px`,
-                            animationDuration: `${particle.duration}s`,
-                            animationDelay: `${particle.delay}s`
-                        }}
-                    />
-                ))}
-            </div>
-
-            {sections.map((section, index) => (
-                <div
-                    key={index}
-                    className={`section ${getSlideClass(index)}`}
-                >
-                    {/* Transition Overlay */}
-                    {isAnimating && index === activeSection - 1 && (
-                        <div className="transition-overlay" />
-                    )}
-                    
-                    {index === activeSection && (
-                        <>
-                            <div className="left-content">
-                                <h1 className="title">
-                                    {section.title.split('').map((char, i) => (
-                                        <span 
-                                            key={i} 
-                                            className="title-char"
-                                            style={{ animationDelay: `${i * 0.05}s` }}
-                                        >
-                                            {char === ' ' ? '\u00A0' : char}
-                                        </span>
-                                    ))}
-                                </h1>
-                                <p className="subtitle">
-                                    <span className="shimmer-text">{section.subtitle}</span>
-                                </p>
-                                <p className="description">{section.description}</p>
-                                <button className="shop-now-btn">
-                                    <span className="btn-text">Shop Now</span>
-                                    <span className="btn-icon">→</span>
-                                </button>
-                            </div>
-                            <div className="right-content">
-                                <div className="perfume-image-container">
-                                    {/* Glow effect behind image */}
-                                    <div className="perfume-glow" />
-                                    
-                                    <img
-                                        src={section.imageUrl}
-                                        alt={section.title}
-                                        className="perfume-image"
-                                    />
-                                    
-                                    {/* Rotating ring around perfume */}
-                                    <div className="perfume-ring" />
-                                </div>
-                            </div>
-                        </>
-                    )}
+        <div className="modern-hero-banner">
+            {/* Left Content Section */}
+            <div className="hero-left-section">
+                <div className="hero-content-box">
+                    <span className="hero-badge">New Arrivals</span>
+                    <h1 className="hero-main-title">
+                        Elegance in <span className="hero-accent-text">Every Drop</span>
+                    </h1>
+                    <p className="hero-desc-text">
+                        Experience the art of fine fragrance. Our collection brings together the world's most exquisite scents, crafted for those who appreciate luxury.
+                    </p>
+                    <div className="hero-action-btns">
+                        <Link to="/stock" className="hero-btn-primary">
+                            Explore Collection
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </Link>
+                        <Link to="/stock" className="hero-btn-outline">
+                            Shop Now
+                        </Link>
+                    </div>
                 </div>
-            ))}
-
-            <div className="nav-buttons">
-                <button
-                    className="nav-btn"
-                    onClick={handlePrev}
-                    disabled={activeSection === 0}
-                    aria-label="Previous fragrance"
-                >
-                    ←
-                </button>
-                <button
-                    className="nav-btn"
-                    onClick={handleNext}
-                    disabled={activeSection === sections.length - 1}
-                    aria-label="Next fragrance"
-                >
-                    →
-                </button>
             </div>
 
-            {/* Progress indicator */}
-            <div className="progress-bar">
-                <div 
-                    className="progress-fill"
-                    style={{ width: `${((activeSection + 1) / sections.length) * 100}%` }}
-                />
+            {/* Right Image Section */}
+            <div className="hero-right-section">
+                <div className="hero-image-container">
+                    <img 
+                        src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&q=80" 
+                        alt="Luxury Perfume"
+                        className="hero-perfume-img"
+                    />
+                    <div className="hero-decorative-shape"></div>
+                </div>
             </div>
+
+            <style>{`
+                .modern-hero-banner {
+                    width: 100%;
+                    height: 80vh;
+                    min-height: 650px;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 0;
+                    background: linear-gradient(135deg, #e8eef7 0%, #f5f7fa 50%, #dce6f2 100%);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                /* Left Content Section */
+                .hero-left-section {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 60px;
+                    position: relative;
+                    z-index: 2;
+                }
+
+                .hero-content-box {
+                    max-width: 550px;
+                    animation: fadeSlideIn 1s ease-out;
+                }
+
+                @keyframes fadeSlideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-40px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+
+                .hero-badge {
+                    display: inline-block;
+                    padding: 8px 20px;
+                    background: rgba(37, 99, 235, 0.12);
+                    color: #1e40af;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 1.5px;
+                    border-radius: 50px;
+                    margin-bottom: 20px;
+                    border: 1.5px solid rgba(37, 99, 235, 0.25);
+                }
+
+                .hero-main-title {
+                    font-size: 3.2rem;
+                    font-weight: 700;
+                    color: #1e293b;
+                    line-height: 1.2;
+                    margin-bottom: 25px;
+                    letter-spacing: -1px;
+                    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                }
+
+                .hero-accent-text {
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }
+
+                .hero-desc-text {
+                    font-size: 1.15rem;
+                    color: #475569;
+                    line-height: 1.7;
+                    margin-bottom: 35px;
+                    max-width: 480px;
+                    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+                }
+
+                .hero-action-btns {
+                    display: flex;
+                    gap: 18px;
+                    flex-wrap: wrap;
+                }
+
+                .hero-btn-primary,
+                .hero-btn-outline {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 15px 32px;
+                    font-size: 0.95rem;
+                    font-weight: 600;
+                    text-decoration: none;
+                    border-radius: 10px;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    cursor: pointer;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+
+                .hero-btn-primary {
+                    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+                    color: white;
+                    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+                }
+
+                .hero-btn-primary:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+                }
+
+                .hero-btn-outline {
+                    background: rgba(255, 255, 255, 0.8);
+                    color: #1e40af;
+                    border: 2px solid #2563eb;
+                    text-shadow: none;
+                }
+
+                .hero-btn-outline:hover {
+                    background: #2563eb;
+                    color: white;
+                    transform: translateY(-2px);
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
+
+                /* Right Image Section */
+                .hero-right-section {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 40px;
+                    position: relative;
+                }
+
+                .hero-image-container {
+                    position: relative;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 1.2s ease-out 0.3s both;
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                .hero-perfume-img {
+                    width: 100%;
+                    max-width: 500px;
+                    height: auto;
+                    object-fit: contain;
+                    position: relative;
+                    z-index: 2;
+                    filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15));
+                    animation: floatImage 6s ease-in-out infinite;
+                }
+
+                @keyframes floatImage {
+                    0%, 100% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-20px);
+                    }
+                }
+
+                .hero-decorative-shape {
+                    position: absolute;
+                    width: 450px;
+                    height: 450px;
+                    background: radial-gradient(circle, rgba(37, 99, 235, 0.18), transparent 70%);
+                    border-radius: 50%;
+                    z-index: 1;
+                    animation: pulse 4s ease-in-out infinite;
+                }
+
+                @keyframes pulse {
+                    0%, 100% {
+                        transform: scale(1);
+                        opacity: 0.8;
+                    }
+                    50% {
+                        transform: scale(1.1);
+                        opacity: 0.5;
+                    }
+                }
+
+                /* Responsive Design */
+                @media (max-width: 1024px) {
+                    .modern-hero-banner {
+                        grid-template-columns: 1fr;
+                        height: auto;
+                        min-height: auto;
+                    }
+
+                    .hero-left-section {
+                        padding: 60px 40px 40px;
+                    }
+
+                    .hero-right-section {
+                        padding: 20px 40px 60px;
+                        order: -1;
+                    }
+
+                    .hero-main-title {
+                        font-size: 2.5rem;
+                    }
+
+                    .hero-perfume-img {
+                        max-width: 400px;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .hero-left-section {
+                        padding: 50px 30px 30px;
+                    }
+
+                    .hero-right-section {
+                        padding: 30px 30px 50px;
+                    }
+
+                    .hero-main-title {
+                        font-size: 2rem;
+                    }
+
+                    .hero-desc-text {
+                        font-size: 1rem;
+                    }
+
+                    .hero-action-btns {
+                        flex-direction: column;
+                    }
+
+                    .hero-btn-primary,
+                    .hero-btn-outline {
+                        width: 100%;
+                        justify-content: center;
+                    }
+
+                    .hero-perfume-img {
+                        max-width: 350px;
+                    }
+
+                    .hero-decorative-shape {
+                        width: 300px;
+                        height: 300px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .hero-main-title {
+                        font-size: 1.75rem;
+                    }
+
+                    .hero-badge {
+                        font-size: 0.75rem;
+                        padding: 8px 20px;
+                    }
+
+                    .hero-perfume-img {
+                        max-width: 280px;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
