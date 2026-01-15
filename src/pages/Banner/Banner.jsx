@@ -249,7 +249,6 @@ export default function Banner() {
 
                     .hero-right-section {
                         padding: 20px 40px 60px;
-                        order: -1;
                     }
 
                     .hero-main-title {
