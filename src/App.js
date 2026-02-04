@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
+import WhatsAppButton from "./components/Button/Button";  
 
 
 
@@ -34,6 +35,7 @@ function App() {
              <Route path="/dashboard/admin" element={<Admin />} />
           </Routes>
           <Footer/>
+          <WhatsAppButton />  
         </BrowserRouter>
       </Suspense>
     </div>
