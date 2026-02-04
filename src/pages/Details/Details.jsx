@@ -5,33 +5,6 @@ import { addItemCart } from "../../store/cart/cartSlice";
 import axios from "axios";
 import './details.css'
 
-// Axios instance with baseURL + auth interceptor
-const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use(
-  (config) => {
-    const publicEndpoints = ["/users/signup/", "/users/login/"];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
-      config.url.includes(endpoint)
-    );
-
-    if (!isPublicEndpoint) {
-      const token = localStorage.getItem("access");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 export default function Details() {
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -44,7 +17,7 @@ export default function Details() {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const response = await api.get(`/products/${id}/`);
+                const response = await axios.get(`https://perfume-backend-4.onrender.com/api/products/${id}/`);
                 setProduct(response.data);
                 setLoading(false);
             } catch (error) {

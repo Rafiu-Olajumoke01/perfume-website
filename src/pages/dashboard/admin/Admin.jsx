@@ -2,33 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
-// Axios instance with baseURL + auth interceptor
-const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use(
-  (config) => {
-    const publicEndpoints = ["/users/signup/", "/users/login/"];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
-      config.url.includes(endpoint)
-    );
-
-    if (!isPublicEndpoint) {
-      const token = localStorage.getItem("access");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -54,10 +27,24 @@ const Dashboard = () => {
     setTimeout(() => setNotification(""), 3000);
   };
 
+  // Helper function to get auth headers
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem("access");
+    return {
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    };
+  };
+
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const res = await api.get("/products/");
+      const res = await axios.get(
+        "https://perfume-backend-4.onrender.com/api/products/",
+        getAuthHeaders()
+      );
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -67,7 +54,10 @@ const Dashboard = () => {
   // Fetch orders
   const fetchOrders = async () => {
     try {
-      const res = await api.get("/orders/orders/");
+      const res = await axios.get(
+        "https://perfume-backend-4.onrender.com/api/orders/orders/",
+        getAuthHeaders()
+      );
       setOrders(res.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -97,12 +87,25 @@ const Dashboard = () => {
 
     if (formData.image) payload.append("image", formData.image);
 
+    const token = localStorage.getItem("access");
+    const headers = {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+
     try {
       if (editingProduct) {
-        await api.put(`/products/${editingProduct.id}/`, payload);
+        await axios.put(
+          `https://perfume-backend-4.onrender.com/api/products/${editingProduct.id}/`,
+          payload,
+          { headers }
+        );
         showNotification("Product updated successfully!");
       } else {
-        await api.post("/products/add/", payload);
+        await axios.post(
+          "https://perfume-backend-4.onrender.com/api/products/add/",
+          payload,
+          { headers }
+        );
         showNotification("Product added successfully!");
       }
       fetchProducts();
@@ -116,7 +119,15 @@ const Dashboard = () => {
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Delete this product?")) {
       try {
-        await api.delete(`/products/${id}/`);
+        const token = localStorage.getItem("access");
+        await axios.delete(
+          `https://perfume-backend-4.onrender.com/api/products/${id}/`,
+          {
+            headers: {
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+          }
+        );
         fetchProducts();
         showNotification("Product deleted");
       } catch (error) {
@@ -156,9 +167,11 @@ const Dashboard = () => {
   // Update order status
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await api.put(`/orders/update/${orderId}/`, {
-        status: newStatus,
-      });
+      await axios.put(
+        `https://perfume-backend-4.onrender.com/api/orders/update/${orderId}/`,
+        { status: newStatus },
+        getAuthHeaders()
+      );
       fetchOrders();
       showNotification("Order status updated");
     } catch (error) {
@@ -172,7 +185,15 @@ const Dashboard = () => {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      await api.delete(`/orders/delete/${orderId}/`);
+      const token = localStorage.getItem("access");
+      await axios.delete(
+        `https://perfume-backend-4.onrender.com/api/orders/delete/${orderId}/`,
+        {
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        }
+      );
       fetchOrders();
       showNotification("Order deleted");
     } catch (error) {

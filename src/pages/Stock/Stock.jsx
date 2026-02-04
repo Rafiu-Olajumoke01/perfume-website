@@ -5,35 +5,8 @@ import { useDispatch } from 'react-redux';
 import { addItemCart } from '../../store/cart/cartSlice';
 import axios from 'axios';
 
-// Axios instance with baseURL + auth interceptor
-const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use(
-  (config) => {
-    const publicEndpoints = ["/users/signup/", "/users/login/"];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
-      config.url.includes(endpoint)
-    );
-
-    if (!isPublicEndpoint) {
-      const token = localStorage.getItem("access");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 export default function HomePage() {
-  const [products, setProducts] = useState([]); // ✅ Changed: Initialize as empty array
+  const [products, setProducts] = useState([]); 
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
@@ -42,9 +15,9 @@ export default function HomePage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/products/');
+        const response = await axios.get('https://perfume-backend-4.onrender.com/api/products/');
         
-        // ✅ Added: Handle different response formats safely
+        // Handle different response formats safely
         let productsData = [];
         if (Array.isArray(response.data)) {
           productsData = response.data;
@@ -62,7 +35,7 @@ export default function HomePage() {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
-        setProducts([]); // ✅ Added: Set empty array on error
+        setProducts([]);
         setLoading(false);
       }
     };
@@ -202,6 +175,13 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {/* No Products Message */}
+        {!loading && products.length === 0 && (
+          <div className="no-products">
+            <p>No products available at the moment.</p>
           </div>
         )}
       </div>

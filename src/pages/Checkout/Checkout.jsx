@@ -5,33 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { checkoutCart } from "../../store/cart/cartSlice";
 import axios from "axios";
 
-// Axios instance with baseURL + auth interceptor — same as Dashboard
-const api = axios.create({
-  baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-api.interceptors.request.use(
-  (config) => {
-    const publicEndpoints = ["/users/signup/", "/users/login/"];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
-      config.url.includes(endpoint)
-    );
-
-    if (!isPublicEndpoint) {
-      const token = localStorage.getItem("access");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -97,8 +70,19 @@ const Checkout = () => {
 
       console.log("Sending order data:", orderData);
 
-      // Send to backend via Vercel rewrite proxy
-      const response = await api.post('/orders/create/', orderData);
+      // Get token if user is logged in
+      const token = localStorage.getItem("access");
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` })
+      };
+
+      // Send to backend
+      const response = await axios.post(
+        'https://perfume-backend-4.onrender.com/api/orders/create/',
+        orderData,
+        { headers }
+      );
 
       console.log("Order created:", response.data);
 
