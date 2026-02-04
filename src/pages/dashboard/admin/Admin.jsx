@@ -68,6 +68,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchProducts();
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Add or update product
