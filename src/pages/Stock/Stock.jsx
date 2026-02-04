@@ -49,7 +49,7 @@ export default function HomePage() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image ? `${product.image}` : null,
+      image: product.image ? `https://perfume-backend-4.onrender.com${product.image}` : null,
       category: product.category,
       quantity: 1
     }));
@@ -95,7 +95,8 @@ export default function HomePage() {
                 {/* Image Container */}
                 <div className="product-image-container">
                   <img
-                    src={product.image ? `${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
+                    // src={product.image ? `${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
+                    src={product.image ? `https://perfume-backend-4.onrender.com${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
                     alt={product.name}
                     className="product-image"
                   />
