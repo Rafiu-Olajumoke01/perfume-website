@@ -33,7 +33,7 @@ api.interceptors.request.use(
 );
 
 export default function HomePage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]); // ✅ Changed: Initialize as empty array
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
@@ -43,11 +43,26 @@ export default function HomePage() {
       try {
         setLoading(true);
         const response = await api.get('/products/');
+        
+        // ✅ Added: Handle different response formats safely
+        let productsData = [];
+        if (Array.isArray(response.data)) {
+          productsData = response.data;
+        } else if (response.data.products && Array.isArray(response.data.products)) {
+          productsData = response.data.products;
+        } else if (response.data.results && Array.isArray(response.data.results)) {
+          productsData = response.data.results;
+        } else {
+          console.error('Unexpected API structure:', response.data);
+          productsData = [];
+        }
+        
         // Only get first 6 products for homepage
-        setProducts(response.data.slice(0, 6));
+        setProducts(productsData.slice(0, 6));
         setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
+        setProducts([]); // ✅ Added: Set empty array on error
         setLoading(false);
       }
     };
