@@ -5,6 +5,33 @@ import { addItemCart } from "../../store/cart/cartSlice";
 import axios from "axios";
 import './details.css'
 
+// Axios instance with baseURL + auth interceptor
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const publicEndpoints = ["/users/signup/", "/users/login/"];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint)
+    );
+
+    if (!isPublicEndpoint) {
+      const token = localStorage.getItem("access");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default function Details() {
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -17,7 +44,7 @@ export default function Details() {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`https://perfume-backend-4.onrender.com/api/products/${id}/`);
+                const response = await api.get(`/products/${id}/`);
                 setProduct(response.data);
                 setLoading(false);
             } catch (error) {
@@ -60,7 +87,7 @@ export default function Details() {
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.image ? `https://perfume-backend-4.onrender.com${product.image}` : null,
+            image: product.image ? `${product.image}` : null,
             category: product.category,  
             quantity: quantity
         }));
@@ -84,7 +111,7 @@ export default function Details() {
                     <div className="details-image-section">
                         <div className="details-image">
                             <img 
-                                src={product.image ? `https://perfume-backend-4.onrender.com${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'} 
+                                src={product.image ? `${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'} 
                                 alt={product.name} 
                             />
                             {product.quantity < 20 && (

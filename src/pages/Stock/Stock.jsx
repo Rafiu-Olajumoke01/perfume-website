@@ -1,18 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import './stock.css';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addItemCart } from '../../store/cart/cartSlice';
 import axios from 'axios';
+
+// Axios instance with baseURL + auth interceptor
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const publicEndpoints = ["/users/signup/", "/users/login/"];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint)
+    );
+
+    if (!isPublicEndpoint) {
+      const token = localStorage.getItem("access");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   // Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://perfume-backend-4.onrender.com/api/products/');
+        const response = await api.get('/products/');
         // Only get first 6 products for homepage
         setProducts(response.data.slice(0, 6));
         setLoading(false);
@@ -24,6 +54,19 @@ export default function HomePage() {
 
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (e, product) => {
+    e.preventDefault();
+    dispatch(addItemCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image ? `${product.image}` : null,
+      category: product.category,
+      quantity: 1
+    }));
+    alert(`✅ ${product.name} added to cart!`);
+  };
 
   return (
     <div className="stock-container">
@@ -64,7 +107,7 @@ export default function HomePage() {
                 {/* Image Container */}
                 <div className="product-image-container">
                   <img
-                    src={product.image ? `https://perfume-backend-4.onrender.com${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
+                    src={product.image ? `${product.image}` : 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&q=80'}
                     alt={product.name}
                     className="product-image"
                   />
@@ -137,10 +180,7 @@ export default function HomePage() {
                   {/* Price and Add to Cart */}
                   <div className="product-footer">
                     <div className="product-price">₦{parseFloat(product.price).toLocaleString()}</div>
-                    <button className="add-to-cart-btn" onClick={(e) => {
-                      e.preventDefault();
-                      alert(`${product.name} added to cart!`);
-                    }}>
+                    <button className="add-to-cart-btn" onClick={(e) => handleAddToCart(e, product)}>
                       Add to Cart
                     </button>
                   </div>

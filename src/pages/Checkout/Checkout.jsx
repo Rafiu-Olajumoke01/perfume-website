@@ -5,6 +5,33 @@ import { useSelector, useDispatch } from "react-redux";
 import { checkoutCart } from "../../store/cart/cartSlice";
 import axios from "axios";
 
+// Axios instance with baseURL + auth interceptor — same as Dashboard
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const publicEndpoints = ["/users/signup/", "/users/login/"];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint)
+    );
+
+    if (!isPublicEndpoint) {
+      const token = localStorage.getItem("access");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -58,8 +85,8 @@ const Checkout = () => {
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
-          price: parseFloat(item.price), // Convert to number
-          total: parseFloat(item.price) * item.quantity // Calculate as number
+          price: parseFloat(item.price),
+          total: parseFloat(item.price) * item.quantity
         })),
         subtotal: parseFloat(subtotal.toFixed(2)),
         shipping: parseFloat(shipping.toFixed(2)),
@@ -68,10 +95,10 @@ const Checkout = () => {
         status: "pending"
       };
 
-      console.log("Sending order data:", orderData); // Debug log
+      console.log("Sending order data:", orderData);
 
-      // Send to backend - UPDATED TO RENDER URL
-      const response = await axios.post('https://perfume-backend-4.onrender.com/api/orders/create/', orderData);
+      // Send to backend via Vercel rewrite proxy
+      const response = await api.post('/orders/create/', orderData);
 
       console.log("Order created:", response.data);
 

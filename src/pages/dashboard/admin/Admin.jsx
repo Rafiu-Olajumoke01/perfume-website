@@ -2,6 +2,33 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
+// Axios instance with baseURL + auth interceptor
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    const publicEndpoints = ["/users/signup/", "/users/login/"];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url.includes(endpoint)
+    );
+
+    if (!isPublicEndpoint) {
+      const token = localStorage.getItem("access");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -30,7 +57,7 @@ const Dashboard = () => {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://perfume-backend-4.onrender.com/api/products/");
+      const res = await api.get("/products/");
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -40,7 +67,7 @@ const Dashboard = () => {
   // Fetch orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("https://perfume-backend-4.onrender.com/api/orders/orders/");
+      const res = await api.get("/orders/orders/");
       setOrders(res.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -67,22 +94,15 @@ const Dashboard = () => {
     payload.append("quantity", formData.stock);
     payload.append("instock", formData.instock);
     payload.append("rating", formData.rating);
+
     if (formData.image) payload.append("image", formData.image);
 
     try {
       if (editingProduct) {
-        await axios.put(
-          `https://perfume-backend-4.onrender.com/api/products/${editingProduct.id}/`,
-          payload,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        await api.put(`/products/${editingProduct.id}/`, payload);
         showNotification("Product updated successfully!");
       } else {
-        await axios.post(
-          "https://perfume-backend-4.onrender.com/api/products/add/",
-          payload,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        await api.post("/products/add/", payload);
         showNotification("Product added successfully!");
       }
       fetchProducts();
@@ -96,7 +116,7 @@ const Dashboard = () => {
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Delete this product?")) {
       try {
-        await axios.delete(`https://perfume-backend-4.onrender.com/api/products/${id}/`);
+        await api.delete(`/products/${id}/`);
         fetchProducts();
         showNotification("Product deleted");
       } catch (error) {
@@ -136,7 +156,7 @@ const Dashboard = () => {
   // Update order status
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`https://perfume-backend-4.onrender.com/api/orders/update/${orderId}/`, {
+      await api.put(`/orders/update/${orderId}/`, {
         status: newStatus,
       });
       fetchOrders();
@@ -152,7 +172,7 @@ const Dashboard = () => {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      await axios.delete(`https://perfume-backend-4.onrender.com/api/orders/delete/${orderId}/`);
+      await api.delete(`/orders/delete/${orderId}/`);
       fetchOrders();
       showNotification("Order deleted");
     } catch (error) {
