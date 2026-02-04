@@ -100,7 +100,7 @@ export default function HomePage() {
         )}
 
         {/* Products Grid */}
-        {!loading && (
+        {!loading && products && products.length > 0 && (
           <div className="products-grid">
             {products.map(product => (
               <Link key={product.id} className="product-card" to={`/products/${product.id}`}>
