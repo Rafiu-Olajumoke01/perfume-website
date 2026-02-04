@@ -20,8 +20,8 @@ export default function Cart() {
   console.log("Cart Items from Redux:", cartItems);
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = subtotal > 0 ? 10.00 : 0;
-  const tax = subtotal * 0.08;
+  const shipping = 0;
+  const tax = 0;
   const total = subtotal + shipping + tax;
 
   return (
@@ -95,7 +95,7 @@ export default function Cart() {
               
               <div className="summary-row">
                 <span>Tax</span>
-                <span>₦{tax.toFixed(2)}</span>
+                <span>₦{tax.toLocaleString()}</span>
               </div>
               
               <div className="summary-divider"></div>
